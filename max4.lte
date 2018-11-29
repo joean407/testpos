@@ -186,6 +186,9 @@
 !2012-12-14	MS changed all beam dumps to ECOL elements, with 1.0 meter cylindrical half-aperture. To close, move the aperture in DX with 10.0 meters
 !			MS inserted vertical scrapers in BC2
 
+! Change
+
+
 !+++++++++++++++++ TO DO LIST ++++++++++++++++++++++++++
 !	Create SDDS file containing aperture data
 !	- Use csv2sdds. An excel sheet or csv file containing the aperture information along the linac will be needed
