@@ -1,4 +1,3 @@
-!++++++++++++++++++++++ CHANGE LOG +++++++++++++++++++++++++++++++++++++
 !2011-11-21 	AW regarding transfer lines:
 !			- 523 from 15IP to center of first ring bpm was set
 !			- YAG at the bottom of TL was placed
@@ -186,9 +185,6 @@
 !2012-12-14	MS changed all beam dumps to ECOL elements, with 1.0 meter cylindrical half-aperture. To close, move the aperture in DX with 10.0 meters
 !			MS inserted vertical scrapers in BC2
 
-! Change
-
-
 !+++++++++++++++++ TO DO LIST ++++++++++++++++++++++++++
 !	Create SDDS file containing aperture data
 !	- Use csv2sdds. An excel sheet or csv file containing the aperture information along the linac will be needed
@@ -298,6 +294,10 @@ IP3:        		marker
 % 90 							sto	phi_L1_INJ3
 % 90 32.0 +						sto	phi_L1_SPF
 % 90 32.0 +						sto	phi_max
+
+! L1 off crest
+% 90 32.0 +						sto	phi_L1_SPF
+
 
 % phi_max dsin 6.44e5 156 * * 2 * 		sto	E_gain_L1
 % E_gain_L1 phi_L1_INJ15 dsin / 2 /		sto	V_L1_INJ15
@@ -1114,18 +1114,18 @@ I.L01a_lin13: 	rfcw, freq = "frequency" ,&
 		phase="phi_L1_INJ3",&
 		change_p0=1,&
 		end1_focus=1, end2_focus=1,&
-		!zwake=1, trwake=1,&
-		!zwakefile="wakefieldlong.sdds",tColumn="t",wzColumn="W",n_bins=0,change_p0=1,&
-		!trwakefile="wakefieldtran.sdds",tColumn="t",wxColumn="W",n_bins=0
+		zwake=1, trwake=1,&
+		zwakefile="wakefieldlong.sdds",tColumn="t",wzColumn="W",n_bins=0,change_p0=1,&
+		trwakefile="wakefieldtran.sdds",tColumn="t",wxColumn="W",n_bins=0
                
 I.L01b_lin13: 	rfcw, freq = "frequency" ,&
 		cell_length="cav_l",l="section_l", volt="V_L1_INJ3",&
 		phase="phi_L1_INJ3",&
 		change_p0=1,&
 		end1_focus=1, end2_focus=1,&
-		!zwake=1, trwake=1,&
-		!zwakefile="wakefieldlong.sdds",tColumn="t",wzColumn="W",n_bins=0,change_p0=1,&
-		!trwakefile="wakefieldtran.sdds",tColumn="t",wxColumn="W",n_bins=0
+		zwake=1, trwake=1,&
+		zwakefile="wakefieldlong.sdds",tColumn="t",wzColumn="W",n_bins=0,change_p0=1,&
+		trwakefile="wakefieldtran.sdds",tColumn="t",wxColumn="W",n_bins=0
                
 
 I.L02a_lin3: 	rfcw, freq = "frequency",&
@@ -1542,7 +1542,8 @@ PreBC1Inj3:  line =  (I.S01a,LIND035,I.S01a.MAG.QE.1,linD002, I.S01a.DIA.SCR.1,l
 I.MS1.MAG.QB.1: 	Kquad, l = 0.2, K1 = -4.211643826464711, SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QB.sdds"
 I.MS1.MAG.QB.2: 	Kquad, l = 0.2, K1 = 4.447351841641614, SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QB.sdds"
 I.MS1.MAG.QB.3: 	Kquad, l = 0.2, K1 = -2.610066616707631, SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QB.sdds"
-I.MS1.MAG.QB.4: 	Kquad, l = 0.2, K1 = 3.628310502149575, SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QB.sdds"
+  
+I.MS1.MAG.QB.4: 	Kquad, l = 0.2, K1 = 0, SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QB.sdds" 
 
 !---Drifts
 I.MS1_D015: 		drift, l = 0.15
@@ -1672,14 +1673,17 @@ I.BC1.MAG.DIA.8_I.BC1.MAG.CRDI: 	csrcsbend,angle="nominal_DIA_ANGLE knob_I.BC1.M
 
 !---Quadrupoles
 ! Quadrupole circuit knobs
-% 1   			sto knob_I.BC1.MAG.CRQM
-% 1   			sto knob_I.BC1.MAG.CRQ1
-% 1   			sto knob_I.BC1.MAG.CRQ2
+% 0   			sto knob_I.BC1.MAG.CRQM
+% 0   			sto knob_I.BC1.MAG.CRQ1
+% 0   			sto knob_I.BC1.MAG.CRQ2
 
 ! Nominal quadrupole field strengths
 % 5.17189   		sto nominal_QM_K1
 % -0.5765   		sto nominal_QDEND_K1
 % 6.00634		sto nominal_QFEND_K1
+
+! Set BC1 QD1 and BC1 QD2 to 0
+% 0 				sto knob_I.BC1.MAG.CRQM
 
 ! Element declarations
 I.BC1.MAG.QD.1_I.BC1.MAG.CRQM:   	Kquad, l = 0.1, K1="nominal_QM_K1 knob_I.BC1.MAG.CRQM *", SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QD.sdds"
@@ -1690,6 +1694,15 @@ I.BC1.MAG.QD.4_I.BC1.MAG.CRQM:   	Kquad, l = 0.1, K1="nominal_QM_K1 knob_I.BC1.M
 I.BC1.MAG.QB.1_I.BC1.MAG.CRQ1: 	Kquad, l = 0.2, K1="nominal_QDEND_K1 knob_I.BC1.MAG.CRQ1 *", SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QB.sdds"
 I.BC1.MAG.QB.2_I.BC1.MAG.CRQ2:  	Kquad, l = 0.2, K1="nominal_QFEND_K1 knob_I.BC1.MAG.CRQ2 *", SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QB.sdds"
 I.BC1.MAG.QB.3_I.BC1.MAG.CRQ1: 	Kquad, l = 0.2, K1="nominal_QDEND_K1 knob_I.BC1.MAG.CRQ1 *", SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QB.sdds"
+
+! Skew quad definition
+
+% 1   				sto knob_I.BC1.MAG.SCRQM
+% -8.17189			sto nominal_SQM_K1
+
+I.BC1.MAG.SQD.1_I.BC1.MAG.SCRQM:   	Kquad, l = 0.1, K1="nominal_SQM_K1 knob_I.BC1.MAG.SCRQM *", SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_QD.sdds"
+
+
 
 
 !---Sextupoles
@@ -1702,6 +1715,9 @@ I.BC1.MAG.QB.3_I.BC1.MAG.CRQ1: 	Kquad, l = 0.2, K1="nominal_QDEND_K1 knob_I.BC1.
 
 
 ! Element declarations
+! Set SXL1 to 0---
+% 0				sto knob_I.BC1.MAG.CRSX
+
 I.BC1.MAG.SXL.1_I.BC1.MAG.CRSX:      	Ksext, l = 0.1, K2="nominal_SXL_K2 knob_I.BC1.MAG.CRSX *", SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_SXL.sdds"
 I.BC1.MAG.SXL.2_I.BC1.MAG.CRSX:      	Ksext, l = 0.1, K2="nominal_SXL_K2 knob_I.BC1.MAG.CRSX * -1 *", SYSTEMATIC_MULTIPOLES="Systematic_multipole_content_SXL.sdds"
 
@@ -1714,6 +1730,7 @@ I.BC1_D020:      	drift, l = 0.2
 I.BC1_D040:      	drift, l = 0.4
 I.BC1_D00535:      	drift, l = 0.0535
 I.BC1_D005:      	drift, l = 0.05
+I.BC1_D010:			drift, l = 0.10
 I.BC1_D0604:		drift, l = 0.604
 I.BC1_D0025:      	drift, l = 0.025
 I.BC1_D0132:      	drift, l = 0.132
@@ -1722,7 +1739,7 @@ I.BC1_D0075: 		drift, l = 0.075
 I.BC1_D0125: 		drift, l = 0.125
 I.BC1_D015: 		drift, l = 0.15
 I.BC1_D107: 		drift, l = 1.07
-I.BC1_D110: 		drift, l = 1.1
+I.BC1_D110:			drift, l = 1.1
 I.BC1_D090: 		drift, l = 0.9
 I.BC1_D054: 		drift, l = 0.54
 I.BC1_D044: 		drift, l = 0.44
@@ -1784,9 +1801,13 @@ BC1Achr2: line = (I.BC1.MAG.DIA.5_I.BC1.MAG.CRDI,I.BC1_D005,I.MAG.COEp,I.BC1.MAG
 				I.BC1_D00535,I.BC1.DIA.SCR.3,I.BC1_D10465,&
 				I.BC1.MAG.DIA.7_I.BC1.MAG.CRDI,I.BC1_D005,I.MAG.COEp,I.BC1.MAG.COEX.4,I.MAG.COEp,I.BC1_D0025,I.MAG.COEp,I.BC1.MAG.COEY.4,I.MAG.COEp,I.BC1_D0845,I.BC1.MAG.DIA.8_I.BC1.MAG.CRDI,BCFIT2,BC1END)
 
-BC1: line = (I.BC1,BC1Achr1,BC1CenterFocus,BC1Achr2)
+!BC1: line = (I.BC1,BC1Achr1,BC1CenterFocus,BC1Achr2)
 
+!BC1: line = (I.BC1.MAG.DIA.1_I.BC1.MAG.CRDI,I.BC1_D005,I.MAG.COEp,I.BC1.MAG.COEX.1,I.MAG.COEp,I.BC1_D082,I.MAG.COEp,I.BC1.MAG.COEY.1,I.MAG.COEp,I.BC1_D005,I.BC1.MAG.DIA.2_I.BC1.MAG.CRDI,&
+!				I.BC1_D010, I.BC1.MAG.SQD.1_I.BC1.MAG.SCRQM, I.BC1_D110, I.BC1.DIA.BP$.1-E,I.BC1.MAG.QD.1_I.BC1.MAG.CRQM,I.BC1_D006,I.BC1.MAG.SXL.1_I.BC1.MAG.CRSX,I.BC1_D006,I.BC1.MAG.QD.2_I.BC1.MAG.CRQM,&
+!				I.BC1_D00535,I.BC1.DIA.SCR.1)
 
+BC1: line = (I.BC1, BC1Achr1,BC1CenterFocus)
 
 !++++++++++++ Matching section 2 ++++++++++++++++++++++++++++++++++++++++++
 
@@ -3193,4 +3214,4 @@ SP02dump:	line = (I.SP02.MAG.DIPBD, I.SP02_Dumpmarg, I.SP02_D080, I.SP02.DIA.SCR
 INJ3:   	line = ( PREINJ,"W-INIT",CH,PreBC1Inj3, match1, BC1, match2, MainAcc15inj3, EX1off, MainAcc3inj3, EX3on, TR3, R3GEV)
 INJ15:	line = ( PREINJ,"W-INIT",CH,PreBC1Inj15, match1, BC1, match2, MainAcc15inj15, EX1on, TR1, R15GEV)
 SPF:    	line = ( PREINJ,"W-INIT",CH,PreBC1, match1, BC1, match2, MainAcc15SPF, EX1off, MainAcc3SPF, EX3off, PreBC2, match3, BC2, SP02, SP02dump)
-EEE:		line = (PREINJ,"W-INIT",CH,PreBC1Inj3, match1, BC1, match2)
+SLICE:		line = (PREINJ,"W-INIT",CH,PreBC1, match1, BC1) 
